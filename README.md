@@ -10,7 +10,7 @@ The [archive of Hilding Mickelsson's photographs](https://halsinglandsmuseum.se/
 
 ## Configuration and usage
 
-You'll need a modern (≥5.16) version of Perl (I suggest using [Perlbrew](https://perlbrew.pl/).) The scripts use a few non-core modules which you'll also need to install: run `perl -c` on each of the scripts (or just check the `use` directives at the top) and install whatever it complains about with [`cpanm`](https://metacpan.org/pod/App::cpanminus) until it stops complaining. 😊 (Perlbrew lets you easily bootstrap `cpanm` with `perlbrew install-cpanm`.)
+You'll need a modern (≥5.16) version of Perl (I suggest using [Perlbrew](https://perlbrew.pl/)). The scripts use a few non-core modules which you'll also need to install: run `perl -c` on each of the scripts (or just check the `use` directives at the top) and install whatever it complains about with [`cpanm`](https://metacpan.org/pod/App::cpanminus) until it stops complaining. 😊 (Perlbrew lets you easily bootstrap `cpanm` with `perlbrew install-cpanm`.)
 
 There are two scripts:
 

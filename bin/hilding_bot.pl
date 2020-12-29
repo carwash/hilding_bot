@@ -149,7 +149,6 @@ sub parse_rdf {
 	
 	my %fields = (
 	              uri => [$uri],
-	              url => [($uri =~ s!/([^/]+)$!/html/$1!r)],
 	             );
 	my $base = RDF::Trine::Node::Resource->new($uri);
 
@@ -169,7 +168,7 @@ sub parse_rdf {
 		for my $field (qw(fromTime toTime)) {
 			for my $value ($model->objects($context, $prefixes->soch($field))) {
 				push @{$fields{$field}}, $value->as_string();
-				#push @{$fields{$field}}, Encode::decode("utf8", $value->as_string()); # On some platforms you may need to explicitly decode strings from K-samsök/SOCH.
+				#push @{$fields{$field}}, Encode::decode('utf8', $value->as_string()); # On some platforms you may need to explicitly decode strings from K-samsök/SOCH.
 			}
 		}
 	}
@@ -177,7 +176,7 @@ sub parse_rdf {
 		for my $field (qw(mediaLicenseUrl highresSource lowresSource thumbnailSource mediaType)) {
 			for my $value ($model->objects($context, $prefixes->soch($field))) {
 				push @{$fields{$field}}, $value->as_string();
-				#push @{$fields{$field}}, Encode::decode("utf8", $value->as_string()); # On some platforms you may need to explicitly decode strings from K-samsök/SOCH.
+				#push @{$fields{$field}}, Encode::decode('utf8', $value->as_string()); # On some platforms you may need to explicitly decode strings from K-samsök/SOCH.
 			}
 		}
 	}
@@ -185,14 +184,14 @@ sub parse_rdf {
 		next unless any {$_->as_string() eq $context->as_string()} ($model->subjects($prefixes->soch('type'), RDF::Trine::Node::Literal->new('Motiv')));
 		for my $value ($model->objects($context, $prefixes->soch('desc'))) {
 			push @{$fields{'ItemDescription'}}, $value->as_string();
-			#push @{$fields{$field}}, Encode::decode("utf8", $value->as_string()); # On some platforms you may need to explicitly decode strings from K-samsök/SOCH.
+			#push @{$fields{'ItemDescription'}}, Encode::decode('utf8', $value->as_string()); # On some platforms you may need to explicitly decode strings from K-samsök/SOCH.
 		}
 	}
 	for my $context ($model->subjects($prefixes->rdf('type'), $prefixes->soch('ItemName'))) {
 		next unless any {$_->as_string() eq $context->as_string()} ($model->subjects($prefixes->soch('type'), RDF::Trine::Node::Literal->new('Motiv')));
 		for my $value ($model->objects($context, $prefixes->soch('name'))) {
 			push @{$fields{'ItemName'}}, $value->as_string();
-			#push @{$fields{$field}}, Encode::decode("utf8", $value->as_string()); # On some platforms you may need to explicitly decode strings from K-samsök/SOCH.
+			#push @{$fields{'ItemName'}}, Encode::decode('utf8', $value->as_string()); # On some platforms you may need to explicitly decode strings from K-samsök/SOCH.
 		}
 	}
 	return (1, \%fields);
@@ -257,22 +256,22 @@ sub construct_text {
 	# License and links:
 	$text{license} = join('', "\n", $fields{mediaLicense}[0], ' Hilding Mickelsson'); 
 	$text{kringla} = "\nKringla: ";
-	$text{source} = "\nKälla: ";
+	$text{uri} = "\nURI: ";
 
 	# We have all our fields (almost); now check for length. How many characters do we have to play with after boilerplate, if any?
-	# NB: have to add c.25 characters to be safe for shortened links to Kringla + source:
-	my $mainmax = 240 - (length(join('', @text{qw(license kringla source)}, exists $text{date} ? $text{date} : '')) + (25*2));
+	# NB: have to add c.25 characters to be safe for shortened links to Kringla + URI:
+	my $mainmax = 240 - (length(join('', @text{qw(license kringla uri)}, exists $text{date} ? $text{date} : '')) + (25*2));
 
 	# Build the text:
 	# Links:
-	$text{kringla} .= $uri =~ s!^http://kulturarvsdata\.se/!http://www.kringla.nu/kringla/objekt?referens=!r;
-	$text{source} .= $fields{url}[0];
+	$text{kringla} .= $fields{uri}[0] =~ s!^http://kulturarvsdata\.se/!http://www.kringla.nu/kringla/objekt?referens=!r;
+	$text{uri} .= $fields{uri}[0];
 
 	# If the main text is already too long, elide it at the last appropriate word boundary. That's all we have room for – no other metadata fields.
 	if (length($text{main}) > $mainmax) {
 		my $diff = $mainmax - 1; # +1 for the ellipsis we're going to add.
 		$text{main} = (sprintf "%.${diff}s", $text{main}) =~ s/\s\S*$//r;
-		$text{final} = join('', $text{main}, '…', exists $text{date} ? $text{date} : '', @text{qw(license kringla source)});
+		$text{final} = join('', $text{main}, '…', exists $text{date} ? $text{date} : '', @text{qw(license kringla uri)});
 	}
 	# Otherwise, we might have space to include some more information on location and keywords:
 	else {
@@ -290,7 +289,7 @@ sub construct_text {
 				}
 			}
 		}
-		$text{final} .= join('', @text{qw(license kringla source)});
+		$text{final} .= join('', @text{qw(license kringla uri)});
 	}
 	# Remove any initial line breaks that might have crept in:
 	$text{final} =~ s/^\n//;
