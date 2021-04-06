@@ -264,7 +264,7 @@ sub construct_text {
 
 	# Build the text:
 	# Links:
-	$text{kringla} .= $fields{uri}[0] =~ s!^http://kulturarvsdata\.se/!http://www.kringla.nu/kringla/objekt?referens=!r;
+	$text{kringla} .= $fields{uri}[0] =~ s!^http://kulturarvsdata\.se/!https://www.kringla.nu/kringla/objekt?referens=!r;
 	$text{uri} .= $fields{uri}[0];
 
 	# If the main text is already too long, elide it at the last appropriate word boundary. That's all we have room for – no other metadata fields.

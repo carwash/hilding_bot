@@ -71,7 +71,7 @@ sub list_uris {
 # Query K-samsök/SOCH for the number of matching objects:
 sub get_hits {
 	my ($ua, $cql) = @_;
-	my $req = HTTP::Request->new(GET => join('', 'http://kulturarvsdata.se/ksamsok/api?version=1.1', '&method=search', '&hitsPerPage=', 1, '&startRecord=', 1, '&sort=addedToIndexDate', '&query=', $cql));
+	my $req = HTTP::Request->new(GET => join('', 'https://kulturarvsdata.se/ksamsok/api?version=1.1', '&method=search', '&hitsPerPage=', 1, '&startRecord=', 1, '&sort=addedToIndexDate', '&query=', $cql));
 	$req->accept_decodable;
 	my $response = $ua->request($req);
 	unless ($response->is_success) {
@@ -91,7 +91,7 @@ sub get_uris {
 	my ($ua, $page, $cql) = @_;
 	my %uris;
 	my $start_record = (($page-1)*500)+1;
-	my $req = HTTP::Request->new(GET => join('', 'http://kulturarvsdata.se/ksamsok/api?version=1.1', '&method=search', '&hitsPerPage=', 500, '&startRecord=', $start_record, '&sort=addedToIndexDate', '&query=', $cql));
+	my $req = HTTP::Request->new(GET => join('', 'https://kulturarvsdata.se/ksamsok/api?version=1.1', '&method=search', '&hitsPerPage=', 500, '&startRecord=', $start_record, '&sort=addedToIndexDate', '&query=', $cql));
 	$req->accept_decodable;
 	my $response = $ua->request($req);
 	unless ($response->is_success) {
